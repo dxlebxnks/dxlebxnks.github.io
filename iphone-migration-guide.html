@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iPhone Migration to Managed Apple ID - Interactive Guide</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --text-primary: #c2c0b6;
+      --text-secondary: #888780;
+      --text-accent: #85b7eb;
+      --text-success: #97c459;
+      --text-warning: #ef9f27;
+      --text-muted: #5f5e5a;
+      
+      --surface-0: #1a1a18;
+      --surface-1: #2c2c2a;
+      --surface-2: #3d3d3a;
+      
+      --bg-accent: #0c447c;
+      --bg-success: #27500a;
+      --bg-warning: #633806;
+      
+      --border: #5f5e5a;
+      --border-strong: #73726c;
+      --border-warning: #8b6f1f;
+      
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif !important;
+      background: #1a1a18 !important;
+      color: #c2c0b6 !important;
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .page-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #5f5e5a;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #c2c0b6;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: #888780;
+    }
+
+    .backup-choice-banner {
+      background: #0c447c;
+      border: 2px solid #85b7eb;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .backup-choice-banner.active {
+      font-weight: 600;
+      color: #85b7eb;
+    }
+
+    .migration-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .progress-section {
+      background: #2c2c2a;
+      border: 1px solid #5f5e5a;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .progress-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
+    .progress-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid #5f5e5a;
+      background: #2c2c2a;
+      color: #888780;
+      flex-shrink: 0;
+    }
+
+    .progress-dot:hover {
+      transform: scale(1.1);
+    }
+
+    .progress-dot.active {
+      background: #85b7eb;
+      color: white;
+      border-color: #85b7eb;
+      box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.1);
+    }
+
+    .progress-dot.completed {
+      background: #97c459;
+      color: white;
+      border-color: #97c459;
+    }
+
+    .progress-dot.pending {
+      background: #3d3d3a;
+      border-color: #73726c;
+    }
+
+    .progress-line {
+      flex: 1;
+      height: 2px;
+      background: #5f5e5a;
+      min-width: 8px;
+      margin: 0 0.25rem;
+    }
+
+    .step-container {
+      background: #2c2c2a;
+      border: 1px solid #5f5e5a;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .step-container.active {
+      border-left: 4px solid #85b7eb;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .step-container.completed {
+      border-left: 4px solid #97c459;
+    }
+
+    .step-container.hidden {
+      display: none;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .step-number {
+      min-width: 44px;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: #0c447c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #85b7eb;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .step-title-section {
+      flex: 1;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #c2c0b6;
+    }
+
+    .step-subtitle {
+      font-size: 13px;
+      color: #888780;
+      margin-top: 0.25rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .badge-pending {
+      background: #633806;
+      color: #ef9f27;
+    }
+
+    .badge-active {
+      background: #0c447c;
+      color: #85b7eb;
+    }
+
+    .badge-complete {
+      background: #27500a;
+      color: #97c459;
+    }
+
+    .step-content {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      padding-left: 56px;
+      border-left: 2px solid #5f5e5a;
+      margin-left: 22px;
+    }
+
+    .step-content.active {
+      display: flex;
+    }
+
+    .instruction {
+      background: #3d3d3a;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border-left: 3px solid #85b7eb;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .instruction-number {
+      font-weight: 600;
+      color: #85b7eb;
+      min-width: 24px;
+      flex-shrink: 0;
+    }
+
+    .instruction-text {
+      font-size: 14px;
+      color: #c2c0b6;
+      flex: 1;
+    }
+
+    .warning {
+      background: #633806;
+      border-left: 3px solid #ef9f27;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #c2c0b6;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .success {
+      background: #27500a;
+      border-left: 3px solid #97c459;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #c2c0b6;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .warning-icon, .success-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .choice-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .choice-btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 1rem;
+      border: 2px solid #5f5e5a;
+      border-radius: 8px;
+      background: #3d3d3a;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      max-height: 1000px;
+      overflow: hidden;
+    }
+
+    .choice-btn:hover {
+      border-color: #85b7eb;
+      background: #0c447c;
+    }
+
+    .choice-btn.selected {
+      border-color: #85b7eb;
+      background: #0c447c;
+      box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.1);
+    }
+
+    .choice-title {
+      font-weight: 600;
+      color: #c2c0b6;
+      margin-bottom: 0.5rem;
+    }
+
+    .choice-desc {
+      font-size: 13px;
+      color: #888780;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      background: #2c2c2a;
+      border-top: 1px solid #5f5e5a;
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .step-counter {
+      font-size: 13px;
+      color: #888780;
+      font-weight: 500;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    .btn-primary {
+      background: #85b7eb;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(24, 95, 165, 0.2);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #3d3d3a;
+      border: 1px solid #5f5e5a;
+      color: #c2c0b6;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #1a1a18;
+    }
+
+    .btn-secondary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #5f5e5a;
+      font-size: 12px;
+      color: #888780;
+    }
+
+    @media (max-width: 600px) {
+      .page-container {
+        padding: 1rem 0.5rem;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .progress-dot {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+      }
+
+      .step-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .button-group {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .step-counter {
+        order: 3;
+        width: 100%;
+        text-align: center;
+      }
+
+      .progress-line {
+        min-width: 0;
+        flex: 0;
+      }
+
+      .progress-bar {
+        gap: 0.25rem;
+        justify-content: center;
+      }
+
+      .choice-buttons {
+        flex-direction: column;
+      }
+
+      .choice-btn {
+        min-width: 100%;
+      }
+    }
+
+    .completion-message {
+      text-align: center;
+      padding: 2rem;
+      background: #27500a;
+      border: 2px solid #97c459;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    .completion-message h2 {
+      color: #97c459;
+      font-size: 22px;
+      margin-bottom: 0.5rem;
+    }
+
+    .completion-message p {
+      color: #c2c0b6;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body style="background: #1a1a18 !important; color: #c2c0b6 !important;">
+  <script>
+    // Force dark mode immediately
+    document.documentElement.style.background = '#1a1a18';
+    document.documentElement.style.color = '#c2c0b6';
+    document.body.style.background = '#1a1a18 !important';
+    document.body.style.color = '#c2c0b6 !important';
+  </script>
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">iPhone Migration to Managed Apple ID</div>
+      <div class="page-subtitle">Interactive step-by-step guide for Senate IT staff</div>
+    </div>
+
+    <div class="backup-choice-banner" id="choiceBanner" style="display: none;">
+      <div id="choiceText"></div>
+    </div>
+
+    <div class="migration-container">
+      <div class="progress-section">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div id="stepsContainer"></div>
+
+      <div class="button-group">
+        <button class="btn-secondary" id="prevBtn" onclick="previousStep()" disabled>← Previous Step</button>
+        <span class="step-counter" id="stepCounter"></span>
+        <button class="btn-primary" id="nextBtn" onclick="nextStep()">Next Step →</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Need help? Contact IT Support: itsupport@example.com | (202) 555-0100</p>
+      <p style="margin-top: 0.5rem;">Version 2.0 | Last updated September 2026</p>
+    </div>
+  </div>
+
+  <script>
+    const stepsBase = [
+      {
+        id: 1,
+        title: "Choose your backup method",
+        subtitle: "How will you backup your personal data?",
+        isChoice: true,
+        choices: [
+          {
+            key: "onedriveSync",
+            title: "OneDrive Auto-Sync (Recommended)",
+            description: "Continuous backup using Senate account. No personal Apple ID changes needed.",
+            benefits: [
+              "Uses your Senate account (no personal credentials needed)",
+              "Automatic continuous sync - no manual action required",
+              "Photos upload in background as you take them",
+              "Access files from any device via OneDrive.com",
+              "Simplest setup - fastest migration path"
+            ],
+            drawbacks: [
+              "Requires OneDrive app installation",
+              "Sync speed depends on file size and network speed",
+              "Photos sync only after app is set up (not instant)"
+            ]
+          },
+          {
+            key: "icloudManual",
+            title: "Manual iCloud Backup",
+            description: "Complete snapshot backup using personal iCloud. May require Apple ID email migration.",
+            benefits: [
+              "Full device backup - includes settings, app data, everything",
+              "One-time complete snapshot of current device state",
+              "Familiar Apple backup ecosystem",
+              "Built-in to iOS - no extra app needed"
+            ],
+            drawbacks: [
+              "Requires personal Apple ID (may have work email conflict)",
+              "If personal Apple ID uses work email, must migrate first (extra step)",
+              "Manual process - you must remember to backup before reset",
+              "Backup can take 15-60 minutes depending on data size",
+              "One-time backup only - no continuous sync"
+            ]
+          }
+        ]
+      }
+    ];
+
+    const icloudPath = [
+      {
+        id: 2,
+        title: "Navigate to your Apple ID settings",
+        subtitle: "Find your personal Apple ID email",
+        instructions: [
+          "On your iPhone, open Settings app",
+          "Tap on your name at the top of the screen",
+          "You are now on your Apple ID page",
+          "Look at the primary email address shown (usually under your name)",
+          "Write it down or remember it for the next step"
+        ],
+        success: "You're now on your Apple ID page. Proceed to the next step."
+      },
+      {
+        id: 3,
+        title: "Check your personal Apple ID email",
+        subtitle: "What email does your personal Apple ID use?",
+        isChoice: true,
+        isAppleIdChoice: true,
+        choices: [
+          {
+            key: "appleIdSenateGov",
+            title: "Senate Email",
+            description: "Personal Apple ID uses first_last@[office].senate.gov",
+            benefits: [],
+            drawbacks: [
+              "Cannot use for personal iCloud backup",
+              "Must migrate to alternate email first",
+              "Extra step required before backup"
+            ]
+          },
+          {
+            key: "appleIdOtherEmail",
+            title: "Other Email (Gmail, Yahoo, etc.)",
+            description: "Personal Apple ID uses non-Senate email",
+            benefits: [
+              "Ready to backup immediately",
+              "No email migration needed",
+              "Can proceed directly to backup"
+            ],
+            drawbacks: []
+          }
+        ]
+      }
+    ];
+
+    const appleIdMigrateStep = {
+      id: 4,
+      title: "Migrate personal Apple ID email",
+      subtitle: "Change from first_last@[office].senate.gov to personal email",
+      instructions: [
+        "You're still on the Apple ID page from the previous step",
+        "Tap 'Password & Security'",
+        "Tap 'Change Email'",
+        "Enter new personal email (Gmail, Yahoo, etc.)",
+        "Verify the email address (check your inbox)",
+        "Complete the change",
+        "Your personal Apple ID is now: yourname@gmail.com (example)"
+      ],
+      success: "Personal Apple ID email migrated. Ready to backup to iCloud.",
+      warning: "You must complete this before proceeding to backup."
+    };
+
+    const icloudBackupStep = {
+      id: 4,
+      title: "Backup to personal iCloud",
+      subtitle: "Create manual full backup",
+      instructions: [
+        "Settings > [Your Name] > iCloud",
+        "Tap 'iCloud Backup'",
+        "Ensure toggle is ON (green)",
+        "Tap 'Back Up Now'",
+        "Keep device connected to power and WiFi",
+        "Wait for completion (15-60 minutes depending on data size)"
+      ],
+      warning: "Keep device plugged in and on WiFi. Do NOT interrupt backup."
+    };
+
+    const icloudVerifyStep = {
+      id: 5,
+      title: "Verify iCloud backup is complete",
+      subtitle: "Check before resetting",
+      instructions: [
+        "Visit iCloud.com in your browser",
+        "Sign in with your personal Apple ID",
+        "Check that backup is recent (today's date)",
+        "Verify your photos and contacts are visible",
+        "Do NOT proceed until verified"
+      ],
+      warning: "This is critical. Verify backup before reset. There is no going back after reset."
+    };
+
+    const onedriveePath = [
+      {
+        id: 3,
+        title: "Enable OneDrive auto-sync",
+        subtitle: "Set up continuous backup to Senate account",
+        instructions: [
+          "Download OneDrive app from App Store if not already installed",
+          "Open OneDrive app and sign in with your Senate account (user@senate.gov)",
+          "Open Photos app > Settings > iCloud",
+          "Turn OFF 'iCloud Photos' if it's currently ON",
+          "Return to OneDrive and enable 'Photo sync'",
+          "Photos will now automatically upload and sync to OneDrive"
+        ],
+        success: "Photos and documents are now syncing to OneDrive continuously."
+      },
+      {
+        id: 4,
+        title: "Verify OneDrive sync is working",
+        subtitle: "Check before resetting",
+        instructions: [
+          "Open OneDrive app and confirm it's syncing",
+          "Check the sync status (should show checkmarks next to photos)",
+          "Open OneDrive.com on computer to verify files are uploading",
+          "Wait for all photos to sync (may take 15-60 minutes)",
+          "Do NOT proceed until sync is complete"
+        ],
+        success: "OneDrive sync is confirmed and working. Ready to proceed."
+      }
+    ];
+
+    const stepsCommon = [
+      {
+        id: 6,
+        title: "Disable Find My and sign out of iCloud",
+        subtitle: "Prevent Activation Lock after reset",
+        instructions: [
+          "Settings > [Your Name] > Find My",
+          "Tap 'Find My iPhone' and toggle it OFF",
+          "You will be prompted to enter your Apple ID password - do so",
+          "After Find My is disabled, go back to Settings",
+          "Tap [Your Name] at the top",
+          "Scroll down to the bottom",
+          "Tap 'Sign Out'",
+          "Enter your Apple ID password when prompted",
+          "Select 'Delete' when asked about keeping a copy of data (device will be erased anyway)",
+          "You are now signed out of iCloud"
+        ],
+        success: "Find My iPhone is disabled and you're signed out of iCloud. Device is ready for reset.",
+        warning: "CRITICAL: You must complete this before reset. Skipping this can lock your device after reset (Activation Lock)."
+      },
+      {
+        id: 7,
+        title: "Reset your iPhone",
+        subtitle: "Complete wipe of all data",
+        instructions: [
+          "Settings > General > Transfer or Reset",
+          "Tap 'Erase All Content and Settings'",
+          "Confirm 'Erase iPhone'",
+          "Device will restart (10-20 minutes)",
+          "Wait until Setup screen appears"
+        ],
+        warning: "WARNING: This is permanent. All local data will be erased. Your backup is your safety net."
+      },
+      {
+        id: 8,
+        title: "Setup with managed Apple ID",
+        subtitle: "Configure device with work account",
+        instructions: [
+          "Follow Setup Assistant screens",
+          "Select language and country",
+          "Connect to WiFi",
+          "When asked for Apple ID, sign in with your MANAGED ID",
+          "Enter: first_last@[office].senate.gov (provided by IT)",
+          "When asked to restore data, select 'Set Up as New iPhone'",
+          "Complete Face ID, Passcode, Siri setup",
+          "Wait for device to fully initialize (20-30 minutes)"
+        ],
+        warning: "IMPORTANT: Select 'Set Up as New iPhone' - do NOT restore from backup."
+      },
+      {
+        id: 9,
+        title: "Wait for IT enrollment",
+        subtitle: "MDM provisioning in progress",
+        instructions: [
+          "IT will enroll your device in MDM",
+          "Okta Verify will be re-enrolled",
+          "This happens automatically in background",
+          "You will see management profile installation",
+          "Wait for IT notification that enrollment is complete",
+          "This may take 30-60 minutes"
+        ],
+        success: "During this step, your Exchange accounts are being provisioned automatically."
+      },
+      {
+        id: 10,
+        title: "Verify Exchange accounts",
+        subtitle: "Confirm automatic account sync",
+        instructions: [
+          "Open Mail app - your work email should appear",
+          "Open Calendar app - work calendar should show",
+          "Open Contacts app - organizational contacts visible",
+          "Try sending a test email from work account",
+          "Check that calendar sync is working",
+          "If email doesn't appear: Settings > Mail > Accounts > Airwatch Exchange",
+          "Tap the Airwatch Exchange account and re-enter your Senate network password",
+          "This often triggers email to populate immediately"
+        ],
+        success: "Exchange accounts auto-synced! Work email and calendar are ready.",
+        warning: "If email still doesn't appear after password re-entry, contact IT Support"
+      }
+    ];
+
+    const restorationICloud = {
+      id: 10,
+      title: "Restore your personal data",
+      subtitle: "Choose how to access your backed-up data",
+      isChoice: true,
+      isRestorationChoice: true,
+      choices: [
+        {
+          key: "icloudAccountDevice",
+          title: "Option A: Add iCloud Account to Device",
+          description: "Restore data to this managed device via personal iCloud account.",
+          benefits: [
+            "Access all backed-up data directly on phone",
+            "Photos, contacts, notes sync automatically",
+            "Most seamless experience",
+            "One-time setup"
+          ],
+          drawbacks: [
+            "Adds personal iCloud account to managed device",
+            "Requires IT approval (check policy first)",
+            "Photos/contacts dual-sync with work account"
+          ]
+        },
+        {
+          key: "icloudWebAccess",
+          title: "Option B: Web Access Only",
+          description: "Keep device clean - access data via iCloud.com browser only.",
+          benefits: [
+            "No personal accounts on managed device",
+            "Cleaner device separation (work vs personal)",
+            "More secure approach",
+            "No conflicts with MDM policies"
+          ],
+          drawbacks: [
+            "More manual process - access data via web",
+            "Slower workflow (requires browser each time)",
+            "Cannot sync photos/contacts to device"
+          ]
+        }
+      ]
+    };
+
+    const icloudRestoreDevice = {
+      id: 11,
+      title: "Add personal iCloud account to device",
+      subtitle: "Sync backed-up data",
+      instructions: [
+        "Settings > [Your Name] > Password & Security > Add Account",
+        "Select 'iCloud' and sign in with personal Apple ID",
+        "Choose what to sync: Photos, Contacts, Notes, Documents",
+        "Toggle ON the items you want to restore",
+        "Device will sync backed-up data (30 min to several hours)"
+      ],
+      success: "Your personal iCloud data is now syncing to the device.",
+      warning: "Confirm with IT that adding personal iCloud is allowed on managed devices."
+    };
+
+    const icloudRestoreWeb = {
+      id: 11,
+      title: "Access backed-up data via iCloud.com",
+      subtitle: "Browser-only access to personal data",
+      instructions: [
+        "On any computer or via browser, visit iCloud.com",
+        "Sign in with your personal Apple ID",
+        "Access your backed-up photos, contacts, documents",
+        "Download files to computer when needed",
+        "Email important files to yourself if necessary"
+      ],
+      success: "Your personal data is accessible via web anytime."
+    };
+
+    const restorationOnedriveSync = {
+      id: 10,
+      title: "Restore your personal data",
+      subtitle: "Choose how to access your OneDrive-synced data",
+      isChoice: true,
+      isRestorationChoice: true,
+      choices: [
+        {
+          key: "onedriveMobileApp",
+          title: "Option A: Sync via OneDrive App on Device",
+          description: "Auto-sync photos and documents to this device.",
+          benefits: [
+            "Photos automatically sync to device camera roll",
+            "Documents accessible via OneDrive app",
+            "Most convenient access",
+            "All data on device for offline access"
+          ],
+          drawbacks: [
+            "Synced files take up local storage space",
+            "May duplicate with work OneDrive files",
+            "Requires continuous app sync"
+          ]
+        },
+        {
+          key: "onedriveWebAccess",
+          title: "Option B: Web Access Only",
+          description: "Keep device clean - access data via OneDrive.com browser.",
+          benefits: [
+            "No duplicate data on device",
+            "Cleaner device (work data only)",
+            "Saves device storage space",
+            "No conflicts with MDM sync"
+          ],
+          drawbacks: [
+            "Must use browser to access OneDrive.com",
+            "Slower workflow - more manual process",
+            "Cannot sync photos to camera roll"
+          ]
+        }
+      ]
+    };
+
+    const onedriveMobileRestore = {
+      id: 11,
+      title: "Enable OneDrive sync on device",
+      subtitle: "Photos and documents sync automatically",
+      instructions: [
+        "Open OneDrive app on your managed device",
+        "Sign in with your personal Microsoft account",
+        "Go to Settings > Photos",
+        "Toggle ON 'Upload my photos'",
+        "Photos from backup will sync to OneDrive app",
+        "Let sync complete (30 min to several hours depending on data)"
+      ],
+      success: "Personal photos and documents are now syncing via OneDrive app.",
+      warning: "Ensure you have enough device storage for synced files."
+    };
+
+    const onedriveWebRestore = {
+      id: 11,
+      title: "Access backed-up data via OneDrive.com",
+      subtitle: "Browser-only access to personal data",
+      instructions: [
+        "On any computer or via browser, visit OneDrive.com",
+        "Sign in with your personal Microsoft account",
+        "Access your synced photos and documents",
+        "Download files to computer when needed",
+        "Email important files to yourself if necessary"
+      ],
+      success: "Your personal data is accessible via OneDrive.com anytime."
+    };
+
+    const completion = {
+      id: 11,
+      title: "Migration complete!",
+      subtitle: "Your device is ready for use",
+      instructions: [
+        "Your managed device is ready",
+        "Work email and calendar are synced automatically",
+        "Device is enrolled in MDM with Okta Verify",
+        "Personal data has been restored (via your chosen backup method)",
+        "Your personal data is always accessible via OneDrive.com or iCloud.com",
+        "Contact IT Support if you experience any issues"
+      ],
+      success: "You have successfully migrated to managed Apple ID!"
+    };
+
+    let currentStep = 0;
+    let backupChoice = null;
+    let appleIdChoice = null;
+    let restorationChoice = null;
+    let steps = [];
+
+    function buildSteps() {
+      steps = [...stepsBase];
+      
+      if (backupChoice === 'onedriveSync') {
+        steps.push(...onedriveePath);
+      } else if (backupChoice === 'icloudManual') {
+        steps.push(...icloudPath);
+        
+        // Add iCloud-specific steps based on Apple ID email type
+        if (appleIdChoice === 'appleIdSenateGov') {
+          // Need to migrate: add migration step + backup + verify
+          steps.push(appleIdMigrateStep);
+          steps.push(icloudBackupStep);
+          steps.push(icloudVerifyStep);
+        } else if (appleIdChoice === 'appleIdOtherEmail') {
+          // No migration needed: go straight to backup + verify
+          steps.push(icloudBackupStep);
+          steps.push(icloudVerifyStep);
+        }
+      }
+      
+      steps.push(...stepsCommon);
+      
+      // Add restoration choice
+      if (backupChoice === 'onedriveSync') {
+        steps.push(restorationOnedriveSync);
+        // Add restoration path based on choice
+        if (restorationChoice === 'onedriveMobileApp') {
+          steps.push(onedriveMobileRestore);
+        } else if (restorationChoice === 'onedriveWebAccess') {
+          steps.push(onedriveWebRestore);
+        }
+      } else if (backupChoice === 'icloudManual') {
+        steps.push(restorationICloud);
+        // Add restoration path based on choice
+        if (restorationChoice === 'icloudAccountDevice') {
+          steps.push(icloudRestoreDevice);
+        } else if (restorationChoice === 'icloudWebAccess') {
+          steps.push(icloudRestoreWeb);
+        }
+      }
+      
+      steps.push(completion);
+      
+      // Renumber steps sequentially
+      steps.forEach((step, index) => {
+        step.id = index + 1;
+      });
+    }
+
+    function makeChoice(choice) {
+      backupChoice = choice;
+      appleIdChoice = null;
+      restorationChoice = null;
+      const scrollY = window.scrollY;
+      buildSteps();
+      currentStep = 0;
+      renderSteps();
+      updateChoiceBanner();
+      // Restore scroll after DOM update is complete
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    }
+
+    function makeAppleIdChoice(choice) {
+      appleIdChoice = choice;
+      const scrollY = window.scrollY;
+      buildSteps();
+      renderSteps();
+      // Restore scroll after DOM update is complete
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    }
+
+    function makeRestorationChoice(choice) {
+      restorationChoice = choice;
+      const scrollY = window.scrollY;
+      buildSteps();
+      for (let i = steps.length - 1; i >= 0; i--) {
+        if (steps[i].isRestorationChoice) {
+          currentStep = i;
+          break;
+        }
+      }
+      renderSteps();
+      // Restore scroll after DOM update is complete
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    }
+
+    function updateChoiceBanner() {
+      const banner = document.getElementById('choiceBanner');
+      const text = document.getElementById('choiceText');
+      
+      if (backupChoice) {
+        banner.style.display = 'block';
+        if (backupChoice === 'onedriveSync') {
+          text.textContent = '✓ You selected: OneDrive Auto-Sync backup method';
+        } else {
+          text.textContent = '✓ You selected: Manual iCloud Backup method';
+        }
+      }
+    }
+
+    function renderSteps() {
+      if (!backupChoice && currentStep > 1) {
+        return;
+      }
+
+      const container = document.getElementById('stepsContainer');
+      container.innerHTML = '';
+
+      let visibleStepNumber = 0;
+      steps.forEach((step, index) => {
+        const isActive = index === currentStep;
+        const isCompleted = index < currentStep;
+
+        const stepDiv = document.createElement('div');
+        stepDiv.className = `step-container ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'step-header';
+        headerDiv.onclick = () => goToStep(index);
+
+        const numberDiv = document.createElement('div');
+        numberDiv.className = 'step-number';
+        numberDiv.textContent = step.id;
+
+        const titleDivWrapper = document.createElement('div');
+        titleDivWrapper.className = 'step-title-section';
+        
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'step-title';
+        titleDiv.textContent = step.title;
+        
+        const subtitleDiv = document.createElement('div');
+        subtitleDiv.className = 'step-subtitle';
+        subtitleDiv.textContent = step.subtitle;
+        
+        titleDivWrapper.appendChild(titleDiv);
+        titleDivWrapper.appendChild(subtitleDiv);
+
+        const badgeDiv = document.createElement('div');
+        if (isCompleted) {
+          const badge = document.createElement('div');
+          badge.className = 'status-badge badge-complete';
+          badge.textContent = '✓ Complete';
+          badgeDiv.appendChild(badge);
+        } else if (isActive) {
+          const badge = document.createElement('div');
+          badge.className = 'status-badge badge-active';
+          badge.textContent = 'Current Step';
+          badgeDiv.appendChild(badge);
+        } else {
+          const badge = document.createElement('div');
+          badge.className = 'status-badge badge-pending';
+          badge.textContent = 'Pending';
+          badgeDiv.appendChild(badge);
+        }
+
+        headerDiv.appendChild(numberDiv);
+        headerDiv.appendChild(titleDivWrapper);
+        headerDiv.appendChild(badgeDiv);
+
+        stepDiv.appendChild(headerDiv);
+
+        if (step.isChoice) {
+          const contentDiv = document.createElement('div');
+          contentDiv.className = `step-content ${isActive ? 'active' : ''}`;
+          
+          const choiceButtonsDiv = document.createElement('div');
+          choiceButtonsDiv.className = 'choice-buttons';
+          
+          step.choices.forEach(choice => {
+            const btn = document.createElement('div');
+            const isBackupChoice = step.title.includes('backup method');
+            const isAppleIdChoice = step.isAppleIdChoice;
+            const isRestorationChoice = step.isRestorationChoice;
+            
+            let isSelected = false;
+            let clickHandler = null;
+            
+            if (isBackupChoice) {
+              isSelected = backupChoice === choice.key;
+              clickHandler = () => makeChoice(choice.key);
+            } else if (isAppleIdChoice) {
+              isSelected = appleIdChoice === choice.key;
+              clickHandler = () => makeAppleIdChoice(choice.key);
+            } else if (isRestorationChoice) {
+              isSelected = restorationChoice === choice.key;
+              clickHandler = () => makeRestorationChoice(choice.key);
+            }
+            
+            btn.className = `choice-btn ${isSelected ? 'selected' : ''}`;
+            btn.onclick = clickHandler;
+            
+            const titleSpan = document.createElement('div');
+            titleSpan.className = 'choice-title';
+            titleSpan.textContent = choice.title;
+            
+            const descSpan = document.createElement('div');
+            descSpan.className = 'choice-desc';
+            descSpan.textContent = choice.description;
+            
+            btn.appendChild(titleSpan);
+            btn.appendChild(descSpan);
+            
+            // Add benefits and drawbacks if selected
+            if (isSelected) {
+              if (choice.benefits && choice.benefits.length > 0) {
+                const benefitsHeading = document.createElement('div');
+                benefitsHeading.style.fontSize = '12px';
+                benefitsHeading.style.fontWeight = '600';
+                benefitsHeading.style.marginTop = '0.75rem';
+                benefitsHeading.style.color = '#97c459';
+                benefitsHeading.textContent = '✓ Benefits:';
+                btn.appendChild(benefitsHeading);
+                
+                choice.benefits.forEach(benefit => {
+                  const benefitItem = document.createElement('div');
+                  benefitItem.style.fontSize = '12px';
+                  benefitItem.style.marginLeft = '0.75rem';
+                  benefitItem.style.marginTop = '0.25rem';
+                  benefitItem.style.color = '#888780';
+                  benefitItem.textContent = '• ' + benefit;
+                  btn.appendChild(benefitItem);
+                });
+              }
+              
+              if (choice.drawbacks && choice.drawbacks.length > 0) {
+                const drawbacksHeading = document.createElement('div');
+                drawbacksHeading.style.fontSize = '12px';
+                drawbacksHeading.style.fontWeight = '600';
+                drawbacksHeading.style.marginTop = '0.75rem';
+                drawbacksHeading.style.color = '#ef9f27';
+                drawbacksHeading.textContent = '⚠ Drawbacks:';
+                btn.appendChild(drawbacksHeading);
+                
+                choice.drawbacks.forEach(drawback => {
+                  const drawbackItem = document.createElement('div');
+                  drawbackItem.style.fontSize = '12px';
+                  drawbackItem.style.marginLeft = '0.75rem';
+                  drawbackItem.style.marginTop = '0.25rem';
+                  drawbackItem.style.color = '#888780';
+                  drawbackItem.textContent = '• ' + drawback;
+                  btn.appendChild(drawbackItem);
+                });
+              }
+            }
+            
+            choiceButtonsDiv.appendChild(btn);
+          });
+          
+          contentDiv.appendChild(choiceButtonsDiv);
+          stepDiv.appendChild(contentDiv);
+        } else {
+          const contentDiv = document.createElement('div');
+          contentDiv.className = `step-content ${isActive ? 'active' : ''}`;
+
+          if (step.warning) {
+            const warningDiv = document.createElement('div');
+            warningDiv.className = 'warning';
+            const warningIcon = document.createElement('span');
+            warningIcon.className = 'warning-icon';
+            warningIcon.textContent = '⚠️';
+            const warningText = document.createElement('span');
+            warningText.textContent = step.warning;
+            warningDiv.appendChild(warningIcon);
+            warningDiv.appendChild(warningText);
+            contentDiv.appendChild(warningDiv);
+          }
+
+          step.instructions.forEach((instruction, i) => {
+            if (instruction === "") {
+              return;
+            }
+            
+            const instrDiv = document.createElement('div');
+            instrDiv.className = 'instruction';
+            
+            const numberSpan = document.createElement('span');
+            numberSpan.className = 'instruction-number';
+            numberSpan.textContent = `${i + 1}.`;
+            
+            const textSpan = document.createElement('span');
+            textSpan.className = 'instruction-text';
+            textSpan.textContent = instruction;
+            
+            instrDiv.appendChild(numberSpan);
+            instrDiv.appendChild(textSpan);
+            contentDiv.appendChild(instrDiv);
+          });
+
+          if (step.success) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            const successIcon = document.createElement('span');
+            successIcon.className = 'success-icon';
+            successIcon.textContent = '✓';
+            const successText = document.createElement('span');
+            successText.textContent = step.success;
+            successDiv.appendChild(successIcon);
+            successDiv.appendChild(successText);
+            contentDiv.appendChild(successDiv);
+          }
+
+          stepDiv.appendChild(contentDiv);
+        }
+
+        container.appendChild(stepDiv);
+      });
+
+      if (currentStep === steps.length - 1 && backupChoice) {
+        const completionDiv = document.createElement('div');
+        completionDiv.className = 'completion-message';
+        const heading = document.createElement('h2');
+        heading.textContent = '🎉 Migration Complete!';
+        const para = document.createElement('p');
+        para.textContent = 'Your iPhone has been successfully migrated to the managed Apple ID environment.';
+        completionDiv.appendChild(heading);
+        completionDiv.appendChild(para);
+        container.appendChild(completionDiv);
+      }
+
+      renderProgress();
+      updateButtons();
+    }
+
+    function renderProgress() {
+      const progressBar = document.getElementById('progressBar');
+      progressBar.innerHTML = '';
+
+      steps.forEach((step, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        
+        if (index === currentStep) {
+          dot.classList.add('active');
+        } else if (index < currentStep) {
+          dot.classList.add('completed');
+        } else {
+          dot.classList.add('pending');
+        }
+        
+        dot.textContent = index < currentStep ? '✓' : step.id;
+        dot.onclick = () => goToStep(index);
+        dot.title = step.title;
+        
+        progressBar.appendChild(dot);
+
+        if (index < steps.length - 1) {
+          const line = document.createElement('div');
+          line.className = 'progress-line';
+          progressBar.appendChild(line);
+        }
+      });
+
+      const counter = document.getElementById('stepCounter');
+      counter.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+    }
+
+    function goToStep(index) {
+      if (!backupChoice && index > 1) {
+        return;
+      }
+      currentStep = Math.max(0, Math.min(index, steps.length - 1));
+      renderSteps();
+      // Scroll the current step into view after render
+      requestAnimationFrame(() => {
+        const activeStep = document.querySelector('.step-container.active');
+        if (activeStep) {
+          activeStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        // If next step is a choice that hasn't been made, ask user to select
+        if (steps[currentStep].isChoice) {
+          let choiceMade = false;
+          if (steps[currentStep].id === 1 && backupChoice) {
+            choiceMade = true;
+          } else if (steps[currentStep].id === 10 && restorationChoice) {
+            choiceMade = true;
+          }
+          // Allow advancing even without choice to see the options
+        }
+        renderSteps();
+        // Scroll the new step into view
+        requestAnimationFrame(() => {
+          const activeStep = document.querySelector('.step-container.active');
+          if (activeStep) {
+            activeStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        renderSteps();
+        // Scroll the new step into view
+        requestAnimationFrame(() => {
+          const activeStep = document.querySelector('.step-container.active');
+          if (activeStep) {
+            activeStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    }
+
+    function updateButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      prevBtn.disabled = currentStep === 0;
+      nextBtn.textContent = currentStep === steps.length - 1 ? '✓ Done' : 'Next Step →';
+      nextBtn.disabled = currentStep === steps.length - 1;
+    }
+
+    buildSteps();
+    renderSteps();
+  </script>
+</body>
+</html>
