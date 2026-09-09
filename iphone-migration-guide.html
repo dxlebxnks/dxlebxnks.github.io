@@ -1315,7 +1315,8 @@
       const activeStep = document.querySelector('.step-container.active');
       if (activeStep) {
         const progressBar = document.querySelector('.progress-section');
-        const progressHeight = progressBar ? progressBar.offsetHeight + 40 : 180;
+        // Large offset to ensure step is clearly visible below progress bar
+        const progressHeight = progressBar ? progressBar.offsetHeight + 200 : 300;
         
         // Get the step number element which is the very top
         const stepNumber = activeStep.querySelector('.step-number');
