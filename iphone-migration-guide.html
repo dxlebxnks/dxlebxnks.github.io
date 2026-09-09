@@ -1311,6 +1311,28 @@
       counter.textContent = `Step ${currentStep + 1} of ${steps.length}`;
     }
 
+    function scrollToStep() {
+      const activeStep = document.querySelector('.step-container.active');
+      if (activeStep) {
+        const progressBar = document.querySelector('.progress-section');
+        const progressHeight = progressBar ? progressBar.offsetHeight + 40 : 180;
+        
+        // Get the step number element which is the very top
+        const stepNumber = activeStep.querySelector('.step-number');
+        const targetElement = stepNumber || activeStep;
+        
+        // Get position relative to viewport
+        const rect = targetElement.getBoundingClientRect();
+        const scrollTop = window.scrollY + rect.top - progressHeight;
+        
+        // Smooth scroll to position
+        window.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
+    }
+
     function goToStep(index) {
       if (!backupChoice && index > 1) {
         return;
@@ -1319,10 +1341,7 @@
       renderSteps();
       // Scroll the current step into view after render
       requestAnimationFrame(() => {
-        const activeStep = document.querySelector('.step-container.active');
-        if (activeStep) {
-          activeStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        setTimeout(scrollToStep, 100);
       });
     }
 
@@ -1342,10 +1361,7 @@
         renderSteps();
         // Scroll the new step into view
         requestAnimationFrame(() => {
-          const activeStep = document.querySelector('.step-container.active');
-          if (activeStep) {
-            activeStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
+          setTimeout(scrollToStep, 100);
         });
       }
     }
@@ -1356,10 +1372,7 @@
         renderSteps();
         // Scroll the new step into view
         requestAnimationFrame(() => {
-          const activeStep = document.querySelector('.step-container.active');
-          if (activeStep) {
-            activeStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
+          setTimeout(scrollToStep, 100);
         });
       }
     }
